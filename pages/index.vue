@@ -65,6 +65,15 @@
             min="0"
             max="100"
           />
+          <input
+            id="slide"
+            type="range"
+            value="100"
+            step="1"
+            min="0"
+            max="100"
+            @input="changeVol($event)"
+          />
           <audio id="audio" src=""></audio>
         </div>
         <div class="playlist">
@@ -234,6 +243,11 @@ export default {
     }
   },
   methods: {
+    changeVol(event) {
+      this.$ = document.querySelector.bind(document)
+      this.audio = this.$('#audio')
+      this.audio.volume = event.target.value / 100
+    },
     play() {
       this.isPlaying = 1
       this.audio.play()
@@ -459,6 +473,29 @@ header h2 {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+#slide {
+  width: 100%;
+  overflow: hidden;
+  -webkit-appearance: none;
+  height: 6px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: 0.2s;
+  transition: opacity 0.2s;
+}
+#slide:hover::-webkit-slider-thumb {
+  background: #ec1f55;
+  box-shadow: -500px 0 0 500px var(--primary-color);
+}
+#slide::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  cursor: pointer;
+  width: 12px;
+  height: 6px;
+  background: #ec1f55;
+  box-shadow: -500px 0 0 500px var(--primary-color);
 }
 .progress {
   width: 100%;
