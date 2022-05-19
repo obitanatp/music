@@ -1,8 +1,16 @@
 <template>
-  <div class="bg-green-500 backdrop-grayscale-80">
+  <div
+    class="
+      !bg-gradient-to-r
+      !from-red-500
+      !via-yellow-500
+      !to-blue-500
+      backdrop-brightness-100 backdrop-blur-150
+    "
+  >
     <div class="player">
       <center>
-        <div class="bg-white dashboard">
+        <div class="dashboard">
           <header>
             <h4>Now playing:</h4>
             <h2 v-if="isActive == false">Undefined</h2>
@@ -65,15 +73,22 @@
             min="0"
             max="100"
           />
-          <input
-            id="slide"
-            type="range"
-            value="100"
-            step="1"
-            min="0"
-            max="100"
-            @input="changeVol($event)"
-          />
+          <div class="inline-flex flex-cols-2 w-80">
+            <Fullvol v-if="vol > 0.66" />
+            <Medvol v-else-if="0.66 >= vol && vol > 0.33" />
+            <Smallvol v-else-if="0.33 >= vol && vol > 0" />
+            <Mute v-else />
+            <input
+              id="slide"
+              type="range"
+              value="100"
+              step="1"
+              min="0"
+              max="100"
+              @input="changeVol($event)"
+              class="w-full"
+            />
+          </div>
           <audio id="audio" src=""></audio>
         </div>
         <div class="playlist">
@@ -168,6 +183,7 @@ export default {
       cdThumbAnimate: null,
       cdthumbimg: null,
       currentTime: 0,
+      vol: 1,
     }
   },
   created() {
@@ -288,6 +304,7 @@ export default {
       this.$ = document.querySelector.bind(document)
       this.audio = this.$('#audio')
       this.audio.volume = event.target.value / 100
+      this.vol = this.audio.volume
     },
     play() {
       this.isPlaying = 1
@@ -512,29 +529,6 @@ header h2 {
   align-items: center;
   justify-content: center;
 }
-#slide {
-  width: 100%;
-  overflow: hidden;
-  -webkit-appearance: none;
-  height: 6px;
-  background: #d3d3d3;
-  outline: none;
-  opacity: 0.7;
-  -webkit-transition: 0.2s;
-  transition: opacity 0.2s;
-}
-#slide:hover::-webkit-slider-thumb {
-  background: #ec1f55;
-  box-shadow: -500px 0 0 500px var(--primary-color);
-}
-#slide::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  cursor: pointer;
-  width: 12px;
-  height: 6px;
-  background: #ec1f55;
-  box-shadow: -500px 0 0 500px var(--primary-color);
-}
 .progress {
   width: 100%;
   overflow: hidden;
@@ -561,7 +555,7 @@ header h2 {
 .playlist {
   padding: 12px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  margin-top: 400px;
+  padding-top: 420px;
 }
 .song:active {
   opacity: 0.8;
