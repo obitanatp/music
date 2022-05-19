@@ -4,7 +4,7 @@
       !bg-gradient-to-r
       !from-red-500
       !via-yellow-500
-      !to-blue-500
+      !to-green-500
       backdrop-brightness-100 backdrop-blur-150
     "
   >
