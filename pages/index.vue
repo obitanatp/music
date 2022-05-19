@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <div class="bg-green-500 backdrop-grayscale-80">
     <div class="player">
       <center>
         <div class="bg-white dashboard">
@@ -83,6 +83,16 @@
               :data-index="index"
               class="song"
               @click="loadCurrentSong(index)"
+              style="
+                display: flex;
+                align-items: center;
+                margin-bottom: 12px;
+                background-color: #fff;
+                padding: 8px 16px;
+                border-radius: 5px;
+                box-shadow: 0 2px 3px rgb(0 0 0 / 10%);
+                cursor: pointer;
+              "
             >
               <img
                 v-if="
@@ -90,15 +100,46 @@
                   m.artists.data[0] == null ||
                   m.artists.data[0].avatar == null
                 "
+                style="
+                  width: 46px;
+                  height: 46px;
+                  background-repeat: no-repeat;
+                  background-size: cover;
+                  background-position: center;
+                  border-radius: 50%;
+                  margin: 0 8px;
+                "
                 class="thumb"
                 src="https://thumbs.dreamstime.com/z/error-page-not-found-vector-vinyl-music-broken-graphic-error-page-not-found-vector-vinyl-music-broken-graphic-background-156624909.jpg"
               />
-              <img v-else class="thumb" :src="m.artists.data[0].avatar.url" />
-              <div class="body">
-                <h3 class="title">{{ m.title }}</h3>
-                <p class="author" v-html="m.content"></p>
+              <img
+                v-else
+                class="thumb"
+                style="
+                  width: 46px;
+                  height: 46px;
+                  background-repeat: no-repeat;
+                  background-size: cover;
+                  background-position: center;
+                  border-radius: 50%;
+                  margin: 0 8px;
+                "
+                :src="m.artists.data[0].avatar.url"
+              />
+              <div class="body" style="flex: 1; padding: 0 16px">
+                <h3 class="title" style="margin-bottom: 4px; font-size: 18px">
+                  {{ m.title }}
+                </h3>
+                <p
+                  class="author"
+                  style="font-size: 12px; color: #999"
+                  v-html="m.content"
+                ></p>
               </div>
-              <div class="option">
+              <div
+                class="option"
+                style="padding: 16px 8px; color: #999; font-size: 18px"
+              >
                 <ThreeDots />
               </div>
             </div>
@@ -106,7 +147,7 @@
         </div>
       </center>
     </div>
-  </main>
+  </div>
 </template>
 <script>
 import axios from 'axios'
@@ -395,9 +436,6 @@ export default {
 }
 </script>
 <style>
-html {
-  background-color: aquamarine;
-}
 .player {
   position: relative;
   max-width: 480px;
@@ -525,51 +563,7 @@ header h2 {
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   margin-top: 400px;
 }
-.song {
-  display: flex;
-  align-items: center;
-  margin-bottom: 12px;
-  background-color: #fff;
-  padding: 8px 16px;
-  border-radius: 5px;
-  box-shadow: 0 2px 3px rgb(0 0 0 / 10%);
-}
-.song.active {
-  background-color: var(--primary-color);
-}
 .song:active {
   opacity: 0.8;
-}
-.song.active .title,
-.song.active .author,
-.song.active .option {
-  color: #fff;
-}
-.song .thumb {
-  width: 46px;
-  height: 46px;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  border-radius: 50%;
-  margin: 0 8px;
-}
-.song .body {
-  flex: 1;
-  padding: 0 16px;
-}
-.song .title {
-  margin-bottom: 4px;
-  font-size: 18px;
-  color: var(--text-color);
-}
-.song .author {
-  font-size: 12px;
-  color: #999;
-}
-.song .option {
-  padding: 16px 8px;
-  color: #999;
-  font-size: 18px;
 }
 </style>
