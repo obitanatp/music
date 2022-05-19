@@ -1,16 +1,8 @@
 <template>
-  <div
-    class="
-      !bg-gradient-to-r
-      !from-red-500
-      !via-yellow-500
-      !to-green-500
-      backdrop-brightness-100 backdrop-blur-150
-    "
-  >
+  <div class="!bg-gradient-to-r !from-red-500 !via-yellow-500 !to-green-500">
     <div class="player">
       <center>
-        <div class="dashboard">
+        <div class="dashboard backdrop-filter backdrop-blur-md">
           <header>
             <h4>Now playing:</h4>
             <h2 v-if="isActive == false">Undefined</h2>
@@ -73,7 +65,7 @@
             min="0"
             max="100"
           />
-          <div class="inline-flex flex-cols-2 w-80">
+          <div class="inline-flex flex-cols-3 w-80">
             <Fullvol v-if="vol > 0.66" />
             <Medvol v-else-if="0.66 >= vol && vol > 0.33" />
             <Smallvol v-else-if="0.33 >= vol && vol > 0" />
@@ -88,6 +80,8 @@
               @input="changeVol($event)"
               class="w-full"
             />
+            <div v-if="isActive == true" @click="download()"><Download /></div>
+            <div v-else><Undown /></div>
           </div>
           <audio id="audio" src=""></audio>
         </div>
@@ -169,6 +163,7 @@ import axios from 'axios'
 export default {
   data() {
     return {
+      amount: 20,
       isActive: false,
       currentIndex: 0,
       isTimeUpdate: 0,
@@ -177,18 +172,19 @@ export default {
       isRandom: 0,
       music: [],
       songname: '',
-      $: null,
       audio: null,
       progr: null,
+      cdthumb: null,
       cdThumbAnimate: null,
       cdthumbimg: null,
       currentTime: 0,
       vol: 1,
       track: [],
+      dash: null,
     }
   },
   created() {
-    while (this.track.length < 20) {
+    while (this.track.length < this.amount) {
       var value = Math.floor(Math.random() * 8500) + 1
       if (this.track.indexOf(value) === -1) {
         this.track.push(value)
@@ -209,40 +205,32 @@ export default {
     }
   },
   mounted() {
-    this.$ = document.querySelector.bind(document)
-    this.audio = this.$('#audio')
-    this.progr = this.$('#progress')
-    this.cdthumbimg = this.$('.cd-thumb-image')
-    const audio2 = this.$('#audio')
-    const progr2 = this.$('#progress')
-    const cdthumbimg2 = this.$('.cd-thumb-image')
-    const cdthumb = this.$('.cd-thumb')
-    const cdWidth = cdthumbimg2.offsetWidth
-    document.onscroll = function () {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop
-      const newCdWidth = cdWidth - scrollTop
-      cdthumbimg2.style.width = newCdWidth > 0 ? newCdWidth + 'px' : 0
-      cdthumbimg2.style.height = newCdWidth > 0 ? newCdWidth + 'px' : 0
-      cdthumbimg2.style.opacity = newCdWidth / cdWidth
-    }
-    this.cdThumbAnimate = cdthumb.animate([{ transform: 'rotate(360deg)' }], {
-      duration: 25000,
-      iterations: Infinity,
-    })
-    audio2.ontimeupdate = function () {
-      if (audio2.duration) {
-        const progressPercent = Math.floor(
-          (audio2.currentTime / audio2.duration) * 100
-        )
-        progr2.value = progressPercent
+    window.addEventListener('scroll', this.handleScroll())
+    this.audio = this.$el.querySelector('#audio')
+    this.progr = this.$el.querySelector('#progress')
+    this.cdthumbimg = this.$el.querySelector('.cd-thumb-image')
+    this.cdthumb = this.$el.querySelector('.cd-thumb')
+    this.cdThumbAnimate = this.cdthumb.animate(
+      [{ transform: 'rotate(360deg)' }],
+      {
+        duration: 25000,
+        iterations: Infinity,
       }
-    }
-    progr2.oninput = function (e) {
-      const seekTime = (audio2.duration / 100) * e.target.value
-      audio2.currentTime = seekTime
-    }
+    )
     let _this = this
     this.cdThumbAnimate.pause()
+    this.audio.ontimeupdate = function () {
+      if (_this.audio.duration) {
+        const progressPercent = Math.floor(
+          (_this.audio.currentTime / _this.audio.duration) * 100
+        )
+        _this.progr.value = progressPercent
+      }
+    }
+    this.progr.oninput = function (e) {
+      const seekTime = (_this.audio.duration / 100) * e.target.value
+      _this.audio.currentTime = seekTime
+    }
     this.audio.onended = function () {
       if (_this.isRandom == 1 && _this.isRepeat == 1) {
         _this.songname = _this.music[_this.currentIndex].title
@@ -255,9 +243,9 @@ export default {
             'https://thumbs.dreamstime.com/z/error-page-not-found-vector-vinyl-music-broken-graphic-error-page-not-found-vector-vinyl-music-broken-graphic-background-156624909.jpg'
         }
       } else if (_this.isRandom == 1 && _this.isRepeat == 0) {
-        var x = Math.floor(Math.random() * 19) + 1
+        var x = Math.floor(Math.random() * (_this.amount - 1)) + 1
         while (_this.music[x].title == null || _this.music[x] == null) {
-          x = Math.floor(Math.random() * 19) + 1
+          x = Math.floor(Math.random() * (_this.amount - 1)) + 1
         }
         _this.songname = _this.music[x].title
         _this.audio.src = _this.music[x].file.audio_url
@@ -279,7 +267,7 @@ export default {
             'https://thumbs.dreamstime.com/z/error-page-not-found-vector-vinyl-music-broken-graphic-error-page-not-found-vector-vinyl-music-broken-graphic-background-156624909.jpg'
         }
       } else {
-        if (_this.currentIndex == 19) {
+        if (_this.currentIndex == _this.amount - 1) {
           _this.currentIndex = 0
         } else {
           _this.currentIndex = _this.currentIndex + 1
@@ -288,7 +276,7 @@ export default {
           _this.music[_this.currentIndex].title == null ||
           _this.music[_this.currentIndex] == null
         ) {
-          if (_this.currentIndex == 19) {
+          if (_this.currentIndex == _this.amount - 1) {
             _this.currentIndex = 0
           } else {
             _this.currentIndex = _this.currentIndex + 1
@@ -306,10 +294,25 @@ export default {
       }
     }
   },
+  destroyed() {
+    window.removeEventListener('scroll', this.handleScroll())
+  },
   methods: {
+    handleScroll() {
+      const header = this.$el.querySelector('header')
+      this.dash = this.$el.querySelector('.dashboard')
+      const cdthumbimg2 = this.$el.querySelector('.cd-thumb-image')
+      const cdWidth = cdthumbimg2.offsetWidth
+      document.onscroll = function () {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop
+        const newCdWidth = cdWidth - scrollTop
+        cdthumbimg2.style.width = newCdWidth > 0 ? newCdWidth + 'px' : 0
+        cdthumbimg2.style.height = newCdWidth > 0 ? newCdWidth + 'px' : 0
+        cdthumbimg2.style.opacity = newCdWidth / cdWidth
+      }
+    },
     changeVol(event) {
-      this.$ = document.querySelector.bind(document)
-      this.audio = this.$('#audio')
+      this.audio = this.$el.querySelector('#audio')
       this.audio.volume = event.target.value / 100
       this.vol = this.audio.volume
     },
@@ -326,15 +329,15 @@ export default {
     prev() {
       this.isPlaying = 1
       this.isActive = true
-      this.audio = this.$('#audio')
+      this.audio = this.$el.querySelector('#audio')
       if (this.isRandom == 1) {
-        var x = Math.floor(Math.random() * 19) + 1
+        var x = Math.floor(Math.random() * (this.amount - 1)) + 1
         while (
           this.music[x].title == null ||
           this.music[x] == null ||
           this.music == null
         ) {
-          x = Math.floor(Math.random() * 19) + 1
+          x = Math.floor(Math.random() * (this.amount - 1)) + 1
         }
         this.songname = this.music[x].title
         this.audio.src = this.music[x].file.audio_url
@@ -347,7 +350,7 @@ export default {
         }
       } else {
         if (this.currentIndex == 0) {
-          this.currentIndex = 19
+          this.currentIndex = this.amount - 1
         } else {
           this.currentIndex = this.currentIndex - 1
         }
@@ -357,7 +360,7 @@ export default {
           this.music == null
         ) {
           if (this.currentIndex == 0) {
-            this.currentIndex = 19
+            this.currentIndex = this.amount - 1
           } else {
             this.currentIndex = this.currentIndex - 1
           }
@@ -376,15 +379,15 @@ export default {
     next() {
       this.isActive = true
       this.isPlaying = 1
-      this.audio = this.$('#audio')
+      this.audio = this.$el.querySelector('#audio')
       if (this.isRandom == 1) {
-        var x = Math.floor(Math.random() * 19) + 1
+        var x = Math.floor(Math.random() * this.amount) + 1
         while (
           this.music[x].title == null ||
           this.music[x] == null ||
           this.music == null
         ) {
-          x = Math.floor(Math.random() * 19) + 1
+          x = Math.floor(Math.random() * this.amount) + 1
         }
         this.songname = this.music[x].title
         this.audio.src = this.music[x].file.audio_url
@@ -442,8 +445,8 @@ export default {
       this.isPlaying = 1
       this.currentIndex = x
       this.cdThumbAnimate.play()
-      this.audio = this.$('#audio')
-      this.cdthumbimg = this.$('.cd-thumb-image')
+      this.audio = this.$el.querySelector('#audio')
+      this.cdthumbimg = this.$el.querySelector('.cd-thumb-image')
       this.songname = this.music[x].title
       if (this.music[x].file != null) {
         this.audio.src = this.music[x].file.audio_url
@@ -455,6 +458,15 @@ export default {
         this.cdthumbimg.src =
           'https://thumbs.dreamstime.com/z/error-page-not-found-vector-vinyl-music-broken-graphic-error-page-not-found-vector-vinyl-music-broken-graphic-background-156624909.jpg'
       }
+    },
+    download() {
+      const url = this.music[this.currentIndex].file.audio_url
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', 'file.mp3')
+      link.download = 'file.mp3'
+      document.body.appendChild(link)
+      link.click()
     },
   },
 }
@@ -480,12 +492,12 @@ export default {
   top: 0;
   width: 100%;
   max-width: 480px;
-  background-color: #fff;
-  border-bottom: 1px solid #ebebeb;
+  background-color: transparent;
 }
 header {
   text-align: center;
   margin-bottom: 10px;
+  color: #03a1fc;
 }
 header h4 {
   font-size: 12px;
