@@ -3,10 +3,46 @@
     <div class="player">
       <center>
         <div class="dashboard backdrop-filter backdrop-blur-md">
-          <header>
-            <h4>Now playing:</h4>
-            <h2 v-if="isActive == false">Undefined</h2>
-            <h2 v-else class="songname">{{ songname }}</h2>
+          <header class="text-gray-700 font-mono">
+            <h4
+              class="
+                bg-gradient-to-r
+                from-green-600
+                via-blue-500
+                to-purple-900
+                text-transparent
+                bg-clip-text
+              "
+            >
+              Now playing:
+            </h4>
+            <h2
+              class="
+                bg-gradient-to-r
+                from-green-600
+                via-blue-500
+                to-purple-900
+                text-transparent
+                bg-clip-text
+              "
+              v-if="isActive == false"
+            >
+              Undefined
+            </h2>
+            <h2
+              class="
+                songname
+                bg-gradient-to-r
+                from-green-600
+                via-blue-500
+                to-purple-900
+                text-transparent
+                bg-clip-text
+              "
+              v-else
+            >
+              {{ songname }}
+            </h2>
           </header>
           <div class="cd">
             <div class="cd-thumb">
@@ -78,7 +114,7 @@
               min="0"
               max="100"
               @input="changeVol($event)"
-              class="w-full"
+              class="w-full !bg-purple-600"
             />
             <div v-if="isActive == true" @click="download()"><Download /></div>
             <div v-else><Undown /></div>
@@ -460,13 +496,15 @@ export default {
       }
     },
     download() {
-      const url = this.music[this.currentIndex].file.audio_url
-      const link = document.createElement('a')
-      link.href = url
-      link.setAttribute('download', 'file.mp3')
-      link.download = 'file.mp3'
-      document.body.appendChild(link)
-      link.click()
+      fetch(`${this.music[this.currentIndex].file.audio_url}`)
+        .then((response) => response.blob())
+        .then((blob) => {
+          const link = document.createElement('a')
+          link.href = URL.createObjectURL(blob)
+          link.download = `${this.music[this.currentIndex].title}.mp3`
+          link.click()
+        })
+        .catch(console.error)
     },
   },
 }
@@ -476,6 +514,7 @@ export default {
   position: relative;
   max-width: 480px;
   margin: 0 auto;
+  min-width: 360px;
 }
 .player .icon-pause {
   display: none;
@@ -491,13 +530,13 @@ export default {
   position: fixed;
   top: 0;
   width: 100%;
+  min-width: 360px;
   max-width: 480px;
   background-color: transparent;
 }
 header {
   text-align: center;
   margin-bottom: 10px;
-  color: #03a1fc;
 }
 header h4 {
   font-size: 12px;
@@ -506,10 +545,6 @@ header h4 {
 header h2 {
   font-size: 20px;
 }
-.songname {
-  font-family: 'Arial';
-}
-
 .cd {
   display: block;
   margin: auto;
@@ -552,7 +587,7 @@ header h2 {
   width: 100%;
   overflow: hidden;
   -webkit-appearance: none;
-  height: 6px;
+  height: 10px;
   background: #d3d3d3;
   outline: none;
   opacity: 0.7;
@@ -560,18 +595,19 @@ header h2 {
   transition: opacity 0.2s;
 }
 .progress:hover::-webkit-slider-thumb {
-  background: #ec1f55;
-  box-shadow: -500px 0 0 500px var(--primary-color);
+  background: purple;
+  /* box-shadow: -500px 0 0 500px var(--primary-color); */
 }
 .progress::-webkit-slider-thumb {
   -webkit-appearance: none;
   cursor: pointer;
   width: 12px;
-  height: 6px;
+  height: 12px;
   background: #ec1f55;
-  box-shadow: -500px 0 0 500px var(--primary-color);
+  /* box-shadow: -500px 0 0 500px var(--primary-color); */
 }
 .playlist {
+  min-width: 360px;
   padding: 12px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   padding-top: 420px;
