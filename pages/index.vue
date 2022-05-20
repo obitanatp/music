@@ -2,47 +2,62 @@
   <div class="!bg-gradient-to-r !from-red-500 !via-yellow-500 !to-green-500">
     <div class="player">
       <center>
-        <div class="dashboard backdrop-filter backdrop-blur-md">
+        <div
+          class="
+            dashboard
+            rounded-xl
+            !bg-white/30
+            backdrop-filter backdrop-blur-md
+          "
+        >
           <header class="text-gray-700 font-mono font-extrabold">
-            <h4
-              class="
-                bg-gradient-to-r
-                from-green-600
-                via-blue-500
-                to-purple-900
-                text-transparent
-                bg-clip-text
-              "
-            >
-              Now playing:
-            </h4>
-            <h2
-              class="
-                bg-gradient-to-r
-                from-green-600
-                via-blue-500
-                to-purple-900
-                text-transparent
-                bg-clip-text
-              "
-              v-if="isActive == false"
-            >
-              Undefined
-            </h2>
-            <h2
-              class="
-                songname
-                bg-gradient-to-r
-                from-green-600
-                via-blue-500
-                to-purple-900
-                text-transparent
-                bg-clip-text
-              "
-              v-else
-            >
-              {{ songname }}
-            </h2>
+            <div>
+              <h4
+                class="
+                  !text-md
+                  w-auto
+                  bg-gradient-to-r
+                  from-green-500
+                  via-blue-700
+                  to-purple-900
+                  text-transparent
+                  bg-clip-text
+                "
+              >
+                Now playing:
+              </h4>
+              <h2
+                class="
+                  !text-xl
+                  w-auto
+                  bg-gradient-to-r
+                  from-green-500
+                  via-blue-700
+                  to-purple-900
+                  text-transparent
+                  bg-clip-text
+                "
+                v-if="isActive == false"
+              >
+                Undefined
+              </h2>
+              <h2
+                class="
+                  songname
+                  !text-xl
+                  w-auto
+                  bg-gradient-to-r
+                  from-green-500
+                  via-blue-700
+                  to-purple-900
+                  text-transparent
+                  bg-clip-text
+                "
+                v-else
+              >
+                {{ songname }}
+              </h2>
+            </div>
           </header>
           <div class="cd">
             <div class="cd-thumb">
@@ -378,6 +393,7 @@ export default {
     prev() {
       this.isPlaying = 1
       this.isActive = true
+      this.cdThumbAnimate.play()
       this.audio = this.$el.querySelector('#audio')
       if (this.isRandom == 1) {
         var x = Math.floor(Math.random() * (this.amount - 1)) + 1
@@ -428,6 +444,7 @@ export default {
     next() {
       this.isActive = true
       this.isPlaying = 1
+      this.cdThumbAnimate.play()
       this.audio = this.$el.querySelector('#audio')
       if (this.isRandom == 1) {
         var x = Math.floor(Math.random() * this.amount) + 1
@@ -550,13 +567,6 @@ export default {
 header {
   text-align: center;
   margin-bottom: 10px;
-}
-header h4 {
-  font-size: 12px;
-}
-
-header h2 {
-  font-size: 20px;
 }
 .cd {
   display: block;
