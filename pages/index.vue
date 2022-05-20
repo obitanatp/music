@@ -3,7 +3,7 @@
     <div class="player">
       <center>
         <div class="dashboard backdrop-filter backdrop-blur-md">
-          <header class="text-gray-700 font-mono">
+          <header class="text-gray-700 font-mono font-extrabold">
             <h4
               class="
                 bg-gradient-to-r
@@ -53,71 +53,86 @@
             </div>
           </div>
           <div class="control">
-            <div v-if="isRepeat == 0" class="btn btn-repeat" @click="repeat()">
+            <div
+              v-if="isRepeat == 0"
+              class="btn btn-repeat cursor-pointer"
+              @click="repeat()"
+            >
               <Repeat />
             </div>
-            <div v-else class="btn btn-repeat" @click="repeat()">
+            <div v-else class="btn btn-repeat cursor-pointer" @click="repeat()">
               <Repeat2 />
             </div>
-            <div class="btn btn-prev" @click="prev()">
+            <div class="btn btn-prev cursor-pointer" @click="prev()">
               <Prev />
             </div>
             <div
               v-if="isPlaying == 0 && isActive == false"
-              class="btn btn-toggle-play border p-2 bg-red-500"
+              class="btn btn-toggle-play border p-2 bg-red-500 cursor-pointer"
             >
               <Unplay />
             </div>
             <div
               v-else-if="isPlaying == 0 && isActive == true"
-              class="btn btn-toggle-play border p-2 bg-red-500"
+              class="btn btn-toggle-play border p-2 bg-red-500 cursor-pointer"
               @click="play()"
             >
               <Play />
             </div>
             <div
               v-else
-              class="btn btn-toggle-play border p-2 bg-red-500"
+              class="btn btn-toggle-play border p-2 bg-red-500 cursor-pointer"
               @click="pause()"
             >
               <Pause />
             </div>
-            <div class="btn btn-next" @click="next()">
+            <div class="btn btn-next cursor-pointer" @click="next()">
               <Next />
             </div>
-            <div v-if="isRandom == 0" class="btn btn-random" @click="random()">
+            <div
+              v-if="isRandom == 0"
+              class="btn btn-random cursor-pointer"
+              @click="random()"
+            >
               <Random />
             </div>
-            <div v-else class="btn btn-random" @click="random()">
+            <div v-else class="btn btn-random cursor-pointer" @click="random()">
               <Random2 />
             </div>
           </div>
           <input
             id="progress"
-            class="progress"
+            class="progress cursor-pointer"
             type="range"
             value="0"
             step="1"
             min="0"
             max="100"
           />
-          <div class="inline-flex flex-cols-3 w-80">
-            <Fullvol v-if="vol > 0.66" />
-            <Medvol v-else-if="0.66 >= vol && vol > 0.33" />
-            <Smallvol v-else-if="0.33 >= vol && vol > 0" />
+          <div
+            class="inline-flex flex-cols-5 w-300px flex-auto"
+            style="height: 30px"
+          >
+            <Fullvol v-if="vol > 66" />
+            <Medvol v-else-if="66 >= vol && vol > 33" />
+            <Smallvol v-else-if="33 >= vol && vol > 0" />
             <Mute v-else />
-            <input
+            <div>&nbsp;&nbsp;</div>
+            <el-slider
               id="slide"
-              type="range"
-              value="100"
-              step="1"
-              min="0"
-              max="100"
+              v-model="vol"
               @input="changeVol($event)"
-              class="w-full !bg-purple-600"
-            />
-            <div v-if="isActive == true" @click="download()"><Download /></div>
-            <div v-else><Undown /></div>
+              class="w-250px cursor-pointer"
+            ></el-slider>
+            <div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
+            <div
+              v-if="isActive == true"
+              class="cursor-pointer"
+              @click="download()"
+            >
+              <Download />
+            </div>
+            <div v-else class="cursor-pointer"><Undown /></div>
           </div>
           <audio id="audio" src=""></audio>
         </div>
@@ -214,7 +229,7 @@ export default {
       cdThumbAnimate: null,
       cdthumbimg: null,
       currentTime: 0,
-      vol: 1,
+      vol: 100,
       track: [],
       dash: null,
     }
@@ -335,7 +350,6 @@ export default {
   },
   methods: {
     handleScroll() {
-      const header = this.$el.querySelector('header')
       this.dash = this.$el.querySelector('.dashboard')
       const cdthumbimg2 = this.$el.querySelector('.cd-thumb-image')
       const cdWidth = cdthumbimg2.offsetWidth
@@ -347,10 +361,9 @@ export default {
         cdthumbimg2.style.opacity = newCdWidth / cdWidth
       }
     },
-    changeVol(event) {
+    changeVol() {
       this.audio = this.$el.querySelector('#audio')
-      this.audio.volume = event.target.value / 100
-      this.vol = this.audio.volume
+      this.audio.volume = this.vol / 100
     },
     play() {
       this.isPlaying = 1
@@ -610,7 +623,7 @@ header h2 {
   min-width: 360px;
   padding: 12px;
   box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-  padding-top: 420px;
+  padding-top: 435px;
 }
 .song:active {
   opacity: 0.8;
