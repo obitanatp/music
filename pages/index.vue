@@ -6,7 +6,7 @@
           class="
             dashboard
             rounded-xl
-            !bg-white/30
+            !bg-white/50
             backdrop-filter backdrop-blur-md
           "
         >
