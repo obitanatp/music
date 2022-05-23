@@ -26,6 +26,8 @@ export default {}
 }
 .container .fas {
   display: grid;
+  width: 20px;
+  height: 20px;
   place-items: center;
   font-size: 4rem;
   color: gray;

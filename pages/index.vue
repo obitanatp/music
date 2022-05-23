@@ -18,8 +18,8 @@
                   w-auto
                   bg-gradient-to-r
                   from-green-500
-                  via-blue-700
-                  to-purple-900
+                  via-blue-500
+                  to-purple-500
                   text-transparent
                   bg-clip-text
                 "
@@ -32,8 +32,8 @@
                   w-auto
                   bg-gradient-to-r
                   from-green-500
-                  via-blue-700
-                  to-purple-900
+                  via-blue-500
+                  to-purple-500
                   text-transparent
                   bg-clip-text
                 "
@@ -48,8 +48,8 @@
                   w-auto
                   bg-gradient-to-r
                   from-green-500
-                  via-blue-700
-                  to-purple-900
+                  via-blue-500
+                  to-purple-500
                   text-transparent
                   bg-clip-text
                 "
@@ -605,6 +605,11 @@ header {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: all 0.3s ease-in;
+  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.3);
+}
+.control .btn-toggle-play:active {
+  box-shadow: inset 10px 10px 10px rgba(0, 0, 0, 0.3);
 }
 .progress {
   width: 100%;
